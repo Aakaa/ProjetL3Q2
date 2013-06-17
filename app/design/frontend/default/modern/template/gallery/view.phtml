@@ -1,0 +1,88 @@
+<div id="container" > </div>
+
+<script type="text/javascript" src="http://magento.cccomputer.fr/js/L3Q2/lib/three.js"></script>
+    <script type="text/javascript" src="http://magento.cccomputer.fr/js/L3Q2/lib/js/controls/OrbitControls.js"></script>
+    <script type="text/javascript" src="http://magento.cccomputer.fr/js/L3Q2/lib/js/loaders/ColladaLoader.js"></script>
+    <script>
+        <?php
+            $_product = $this->getProduct();
+            $model = Mage::helper('fileattributes');
+            $fileName = $_product->view_3d;
+            $urlModel = $model->getFileUrl($fileName);
+        ?>
+        var container;
+        
+        var camera, controls, scene, renderer;
+        
+        var loader, dae;
+
+        var urlModel = '<?php echo $urlModel; ?>';
+        
+        var RENDER_WIDTH = 300;
+        var RENDER_HEIGHT = 300;
+
+        var SCALE_OBJECT = 7; 
+
+        init();
+        animate();
+
+        function init() {
+
+            camera = new THREE.PerspectiveCamera( 75, RENDER_WIDTH / RENDER_HEIGHT, 1, 10000 );
+            camera.position.z = 10;
+            //objet qui permet le control de la camera avec la souris
+
+            // renderer
+            renderer = new THREE.WebGLRenderer( { antialias: true } );
+            renderer.setSize( RENDER_WIDTH, RENDER_HEIGHT );
+            container = document.getElementById( 'container' );
+            container.appendChild( renderer.domElement );
+
+            controls = new THREE.OrbitControls( camera , container );
+            controls.addEventListener( 'container', render );
+            controls.minDistance = 22;
+            controls.maxDistance = 35;
+
+            scene = new THREE.Scene();
+            pointLightCam = new THREE.PointLight( 0xffffff );
+            pointLightCam.intensity = 0.5;
+            scene.add( pointLightCam );
+            pointLightFixe = new THREE.PointLight( 0xffffff );
+            pointLightFixe.intensity = 0.5;
+            pointLightFixe.position.y = 1000;
+            scene.add(pointLightFixe);
+
+            loader = new THREE.ColladaLoader();
+            loader.options.convertUpAxis = true;
+            loader.load( urlModel,function (collada){
+                dae = collada.scene;
+                dae.scale.x = dae.scale.y = dae.scale.z = SCALE_OBJECT;
+                scene.add(dae);
+            });
+            window.addEventListener( 'resize', onWindowResize, false );
+        }
+
+        //Repositionne l'objet lorsqu'on change la dimension de la fenêtre
+        function onWindowResize() {
+
+            //camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            
+            //renderer.setSize( window.innerWidth, window.innerHeight );
+            render();
+
+        }
+
+        //Mise à jour de l'affichage
+        function animate() {
+            requestAnimationFrame( animate );
+            controls.update();
+            pointLightCam.position.set(camera.position.x,camera.position.y,camera.position.z);
+            render();
+
+        }
+
+        function render() {
+            renderer.render( scene, camera );
+        }
+</script>

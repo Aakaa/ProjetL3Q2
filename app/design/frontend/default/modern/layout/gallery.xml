@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!-- Indique à magento quels blocks ajouter dans quelle page (Le Layout est créé) -->
+<layout version="0.1.0">
+    <gallery_index_index>
+            <!-- Magento « crée un block qu'il ira chercher dans le module Gallery, 
+             * qui s’apellera « gallery » et qui utilisera le template « display.phtml » 
+             * qui se trouvera dans le dossier « gallery » du dossier « template ».
+            -->
+        <reference name="root">
+            <action method="setTemplate"> <template>gallery/layout.phtml</template> </action>
+        </reference>
+        
+        <reference name="content">
+            <block type="gallery/gallery" name="gallery.gallery" template="gallery/gallery.phtml"/>
+        </reference>
+        
+    </gallery_index_index>
+    
+    <gallery_index_gallery>
+        <reference name="content">
+            <block type="gallery/gallery"  name="gallery.display" template="gallery/display.phtml" />
+        </reference>
+    </gallery_index_gallery>
+    
+    <gallery_index_tuto>
+        <reference name="content">
+            <block type="gallery/gallery" name="gallery.tuto" template="gallery/tutomvt.phtml" />
+        </reference>
+    </gallery_index_tuto>
+
+</layout>

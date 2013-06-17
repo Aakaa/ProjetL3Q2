@@ -1,0 +1,76 @@
+<?php
+    $model = Mage::helper('fileattributes'); //Model qui va permettre de récupérer les liens des fichiers view_3D
+    $products = $this->getProductsBlock(); //Récupère tous les produits disponible en 3D
+    $sculptures = $this->getSculpturesBlock(); //Récupère toutes les sculptures disponible en 3D
+    $peintures = $this->getPaintingsBlock(); //Récupère toutes les peintures disponible en 3D
+?>
+
+<div id="page" data-role="page">
+    <div data-role="header">
+        <h1>Visite de la Galerie</h1>
+        <a href="http://magento.cccomputer.fr/Gallery/index/tuto" data-icon="gear" class="ui-btn-right" data-rel="dialog" data-transition="slidedown">
+            Comment se deplacer
+        </a> 
+    </div>
+    <div id="container" data-role="content">                
+        <div id="containerInfo">
+            <div id="info"> </div>
+        </div>           
+    </div>
+    <div data-role="footer">    
+    </div>
+</div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+<script type="text/javascript" src="http://magento.cccomputer.fr/js/L3Q2/lib/three.js"></script>
+<script type="text/javascript" src="http://magento.cccomputer.fr/js/L3Q2/lib/js/loaders/ColladaLoader.js"></script>
+<script type="text/javascript" src="http://magento.cccomputer.fr/js/L3Q2/lib/js/controls/FirstPersonControls.js"></script>
+<script type="text/javascript" src="http://magento.cccomputer.fr/js/L3Q2/Galerie.js"></script>
+<script type="text/javascript" src="http://magento.cccomputer.fr/js/L3Q2/lib/asyncqueue.js"></script>
+<script type="text/javascript">
+    $(function() {
+        var galerie = new Galerie("http://magento.cccomputer.fr/js/L3Q2/models/galerie/GalerieV4.dae");
+        var receptionRoom = new Room("receptionRoom",new Area(-30,82,50.5,90));
+        var sculptureRoom = new ShowRoom("showRoom_sculpture",new Area(26.7,78,-55,50.5),29.9,2,6);
+        var paintingRoom = new ShowRoom("showRoom_painting",new Area(-27,17,-101,50.5),44.9,2,6);
+        galerie.getRooms().push(receptionRoom,sculptureRoom,paintingRoom);
+        var nbSculpture = 2;
+        var nbPeinture = 0;
+        var galerie3D = new Galerie3D(galerie);
+        
+        <?php
+            foreach( $sculptures as $s )
+            {
+                $name = $s['name'];
+                $url_path = $s['url_path'];
+                $filename = $s['filename'];
+                $file_url = $s['file_url'];
+                
+                echo "galerie.getRoom(1).addArtwork(new Artwork('$name','sculpture', '', '', '$file_url', 'http://magento.cccomputer.fr/$url_path'));";
+            }
+            
+            foreach( $peintures as $p)
+            {
+                $name = $p['name'];
+                $url_path = $p['url_path'];
+                $filename = $p['filename'];
+                $file_url = $p['file_url'];
+                
+                echo "galerie.getRoom(2).addArtwork(new Artwork('$name','peinture', '', '$filename', '$file_url', 'http://magento.cccomputer.fr/$url_path'));";
+            }
+        ?>
+        
+        
+        galerie3D.init();
+        /* 
+        * \param room Room est la salle ou on va charger les objets
+        * \param ecartObjet represente l'ecart entre les objets sur l'axe Z
+        * \param ecartMur represente l'ecart entre les objets et le mur sur l'axe X
+        * \param scale represente la valeur de l'echelle qu'on souhaite donner à l'objet
+        * \param hauteur represente la valeur de la position de l'objet sur l'axe Y
+        */
+        galerie3D.chargerObjet( galerie.getRoom(1) , 30 , 3 , 5 , 1 );
+        galerie3D.chargerObjet( galerie.getRoom(2) , 40 , -2.5 , 5 , 1 );
+        galerie3D.animate();
+    });
+</script>

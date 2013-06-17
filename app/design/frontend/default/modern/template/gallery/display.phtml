@@ -1,0 +1,27 @@
+<?php 
+    echo $this->bouhBlock() . '<br/>';
+    
+    $products = $this->getProductsBlock();
+    $scultures = $this->getSculpturesBlock();
+    $peintures = $this->getPaintingsBlock();
+       
+    //echo count($products) . '<br/>';
+    /*
+    $p = $products[0];
+    
+    
+    echo '$p->url_path : ' . $p->url_path . '<br/>';
+    echo '$p->view_3d : ' . $p->view_3d . '<br/>';
+    echo '$p->name : ' . $p->name . '<br/>';
+    */
+    $test = array();
+    $model_p = Mage::getModel('catalog/product');
+    $model_fileattribute = Mage::helper('fileattributes');
+    
+    var_dump($products); 
+    echo '<br/><br/><br/>';
+    var_dump($peintures);
+    echo '<br/><br/><br/>';
+    var_dump($scultures);
+    
+?>
